@@ -11,6 +11,9 @@ class TabBar extends Component {
 			case 'home':
 				navigation.navigate('HomeScreen');
 				break;
+			case 'search':
+				navigation.navigate('SearchScreen');
+				break;
 			case 'profile':
 				navigation.navigate('ProfileScreen');
 				break;
@@ -34,6 +37,7 @@ class TabBar extends Component {
 		return (
 			<View style={styles.container}>
 				{this.renderTab({ text: 'Inicio', route: 'home' })}
+				{this.renderTab({ text: 'Buscar', route: 'search' })}
 				{this.renderTab({ text: 'Perfil', route: 'profile' })}
 			</View>
 		);

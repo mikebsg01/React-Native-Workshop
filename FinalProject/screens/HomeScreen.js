@@ -42,16 +42,26 @@ export default class ProfileScreen extends Component {
     }
   };
 
-  async getRandomDogImages() {
-    let response = await fetch('https://dog.ceo/api/breeds/image/random/30');
+  async getRandomDogImages(breed = null) {
+    let response;
+
+    if (typeof(breed) === 'undefined' || breed == null) {
+      response = await fetch('https://dog.ceo/api/breeds/image/random/30');
+    } else {
+      response = await fetch(`https://dog.ceo/api/breed/${breed}/images/random/30`);
+    }
+
     let responseJson = await response.json();
     return responseJson.message;
   }
 
   componentDidMount() {
-		this.getUser();
+    this.getUser();
+    
+    const { navigation } = this.props;
+    const breed = navigation.getParam('breed');
 
-    this.getRandomDogImages()
+    this.getRandomDogImages(breed)
         .then(dogImages => {
             this.setState({
               dogImages: dogImages
@@ -103,7 +113,8 @@ const styles = StyleSheet.create({
   scrollContentContainer: {
 		backgroundColor: '#fff',
 		paddingVertical: 5,
-    paddingHorizontal: 5
+    paddingTop: 5,
+    paddingBottom: 35
 	},
   imgDog: {
     flex: 1,

@@ -18,6 +18,8 @@ export default class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.getUser = this.getUser.bind(this);
+        this.onPressLogout = this.onPressLogout.bind(this);
+        this.logoutUser = this.logoutUser.bind(this);
     }
 
     getUser = async () => {
@@ -41,12 +43,23 @@ export default class ProfileScreen extends Component {
         }
     };
 
-    componentDidMount() {
-        this.getUser();
-    }
+    logoutUser = async () => {
+        try {
+            await AsyncStorage.removeItem('session');
+            const { navigation } = this.props;
+            navigation.navigate('LoginScreen');
+            alert('Haz finalizado la sesión.');
+        } catch (error) {
+            alert('Ocurrió un error al cerrar sesión.');
+        }
+    };
 
     onPressLogout() {
-        alert('Here we go');
+        this.logoutUser();
+    }
+
+    componentWillMount() {
+        this.getUser();
     }
 
 	render() {
@@ -94,7 +107,7 @@ const styles = StyleSheet.create({
   lblEmail: {
     fontSize: 14,
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 30,
     color: '#1990B8'
   },
   btnLogout: {
