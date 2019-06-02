@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { AsyncStorage, StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, View, TextInput, Button, Image } from 'react-native';
+import TabBar from '../components/TabBar';
 
 export default class ProfileScreen extends Component {
 
@@ -10,7 +11,8 @@ export default class ProfileScreen extends Component {
     state = {
         firstName: null,
         lastName: null,
-        email: null
+        email: null,
+        profilePictureUri: null
     };
 
     constructor(props) {
@@ -31,7 +33,8 @@ export default class ProfileScreen extends Component {
             this.setState({
                 firstName: session.firstName,
                 lastName: session.lastName,
-                email: session.email
+                email: session.email,
+                profilePictureUri: session.profilePictureUri
             });
         } catch (error) {
             alert('Ocurrió un error al cargar los datos.');
@@ -42,12 +45,22 @@ export default class ProfileScreen extends Component {
         this.getUser();
     }
 
+    onPressLogout() {
+        alert('Here we go');
+    }
+
 	render() {
 		return (
 		<View style={styles.container}>
-            <Text>Perfil</Text>
-			<Text>Nombre: {this.state.firstName}</Text>
-            <Text>Apellido(s): {this.state.lastName}</Text>
+            <Text style={styles.lblProfile}>Perfil</Text>
+            <Image
+                style={styles.imgProfilePicture}
+                source={{uri: this.state.profilePictureUri}}
+            />
+			<Text style={styles.lblFullName}>{this.state.firstName} {this.state.lastName}</Text>
+            <Text style={styles.lblEmail}>{this.state.email}</Text>
+            <Button title="Cerrar sesión" onPress={this.onPressLogout} color="#ff0000" style={styles.btnLogout} />
+            <TabBar selected="profile"/>
 		</View>
 		);
 	}
@@ -61,5 +74,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     backgroundColor: '#fff'
+  },
+  lblProfile: {
+    fontSize: 28,
+    textAlign: 'center',
+    marginBottom: 20
+  },
+  imgProfilePicture: {
+    width: 220, 
+    height: 220,
+    marginBottom: 20,
+    borderRadius: 8
+  },
+  lblFullName: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  lblEmail: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 10,
+    color: '#1990B8'
+  },
+  btnLogout: {
+    margin: 15,
+    paddingHorizontal: 8,
+    paddingVertical: 6
   }
 });

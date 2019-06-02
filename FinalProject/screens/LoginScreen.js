@@ -14,13 +14,37 @@ export default class LoginScreen extends Component {
 
     constructor(props) {
         super(props);
+        this.keepSession = this.keepSession.bind(this);
         this.onPressLogin = this.onPressLogin.bind(this);
         this.loginUser = this.loginUser.bind(this);
     }
 
+    keepSession = async () => {
+        try {
+            const session = await AsyncStorage.getItem('session');
+
+            if (session != null) {
+                const { navigation } = this.props;
+                navigation.navigate('HomeScreen');
+            }
+        } catch (error) {
+            alert('Ocurrió un error al cargar los datos.');
+        }
+    };
+
+    componentWillMount() {
+        this.keepSession();
+    }
+
+    async getRandomDogImage() {
+        let response = await fetch('https://dog.ceo/api/breeds/image/random');
+        let responseJson = await response.json();
+        return responseJson.message;
+    }
+
     loginUser = async (user) => {
         try {
-            const users = JSON.parse(await AsyncStorage.getItem('users'));
+            const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
 
             let userFound = users.find((e) => {
                 return e.email === user.email && e.password === user.password;
@@ -31,10 +55,11 @@ export default class LoginScreen extends Component {
                 return false;
             }
 
+            userFound.profilePictureUri = await this.getRandomDogImage();
             await AsyncStorage.setItem('session', JSON.stringify(userFound));
             
             const { navigation } = this.props;
-            navigation.navigate('ProfileScreen');
+            navigation.navigate('HomeScreen');
 
             return userFound;
         } catch (error) {
